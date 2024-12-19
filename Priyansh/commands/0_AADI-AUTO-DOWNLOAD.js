@@ -1,50 +1,47 @@
-const axios = require('axios');
-const fs = require('fs');
-const getFBInfo = require("shankar-facebook");
+module.exports = {
+  config: {
+    name: "linkAutoDownload",
+    version: "1.3.0",
+    hasPermssion: 0,
+    credits: "ARIF BABU",
+    description:
+      "Automatically detects links in messages and downloads the file.",
+    commandCategory: "Utilities",
+    usages: "",
+    cooldowns: 5,
+  },
+  run: async function ({ events, args }) {},
+  handleEvent: async function ({ api, event, args }) {
+    const axios = require("axios");
+    const request = require("request");
+    const fs = require("fs-extra");
+    const content = event.body ? event.body : "";
+    const body = content.toLowerCase();
+    const { alldown } = require("Arif-babu-media");
+    if (body.startsWith("https://")) {
+      api.setMessageReaction("📿", event.messageID, (err) => {}, true);
+      const data = await alldown(content);
+      console.log(data);
+      const { low, high, title } = data.data;
+      api.setMessageReaction("❣️", event.messageID, (err) => {}, true);
+      const video = (
+        await axios.get(high, {
+          responseType: "arraybuffer",
+        })
+      ).data;
+      fs.writeFileSync(
+        __dirname + "/cache/auto.mp4",
+        Buffer.from(video, "utf-8")
+      );
 
-module.exports.config = {
-  name: "fbdown",
-  version: "1.0",
-  hasPermssion: 0,
-  credits: "SHANKAR SUMAN",
-  description: "Automatically download Facebook videos",
-  usePrefix: false,
-  commandCategory: "Media",
-  usage: " ",
-  cooldowns: 3,
-};
-
-module.exports.handleEvent = async function ({ api, event }) {
-  if (event.body !== null && event.isGroup) {
-    const facebookLinkRegex = /https:\/\/www\.facebook\.com\/\S+/;
-    const link = event.body;
-
-    if (facebookLinkRegex.test(link)) {
-      api.setMessageReaction("📥", event.messageID, () => { }, true);
-      downloadAndSendFBContent(link, api, event);
+      return api.sendMessage(
+        {
+          body: `✨❁ ━━ ━[ 😀 ]━ ━━ ❁✨\n\nᴛɪᴛʟᴇ: ${title}\n\n✨❁ ━━ ━[ 😈 ]━ ━━ ❁✨`,
+          attachment: fs.createReadStream(__dirname + "/cache/auto.mp4"),
+        },
+        event.threadID,
+        event.messageID
+      );
     }
-  }
-};
-
-const downloadAndSendFBContent = async (url, api, event) => {
-  const fbvid = './video.mp4'; 
-  try {
-    const result = await getFBInfo(url);
-    let videoData = await axios.get(encodeURI(result.sd), { responseType: 'arraybuffer' });
-    fs.writeFileSync(fbvid, Buffer.from(videoData.data, "utf-8"));
-    
-    api.sendMessage({
-      body: "𝖠𝗎𝗍𝗈 𝖣𝗈𝗐𝗇 𝖥𝖺𝖼𝖾𝖻𝗈𝗈𝗄 𝖵𝗂𝖽𝖾𝗈",
-      attachment: fs.createReadStream(fbvid)
-    }, event.threadID, () => {
-      fs.unlinkSync(fbvid); 
-    });
-  } catch (e) {
-    console.log(e);
-    api.sendMessage("❌ | Unable to download the Facebook video.", event.threadID);
-  }
-};
-
-module.exports.run = async function ({ api, event }) {
-  api.sendMessage("📝 | This command automatically downloads Facebook videos.", event.threadID);
+  },
 };
