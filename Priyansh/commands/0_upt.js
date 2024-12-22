@@ -14,9 +14,9 @@ module.exports.config = {
   version: "1.0.1",
   hasPermssion: 0,
   credits: "SHAAN KHAN",
-  description: "no prefix",
-  commandCategory: "no prefix",
-  usages: "check bot uptime",
+  description: "Koii Prefix nhi",
+  commandCategory: "Hukum Ke Bagher",
+  usages: "Online Time Timing Dekhye",
   cooldowns: 5
 };
 
@@ -29,7 +29,7 @@ function byte2mb(bytes) {
 
 module.exports.handleEvent = async ({ api, event, Threads }) => {
   const xuly = Math.floor((Date.now() - global.client.timeStart) / 4444);
-  const trinhtrang = xuly < 10 ? " Acha ✔️" : xuly > 10 && xuly < 100 ? "Sthir" : "Dheema";
+  const trinhtrang = xuly < 10 ? "  Acha ✔️" : xuly > 10 && xuly < 100 ? "Thir" : "Ammi";
 
   if (!event.body) return;
 
@@ -60,7 +60,7 @@ module.exports.handleEvent = async ({ api, event, Threads }) => {
                             `✰ 𝗗𝗔𝗧𝗘 ➪ ${formattedDate}\n` +
                             `✰ 𝗗𝗔𝗬 ➪ ${formattedDay}\n` +
                             `━━━━━━━━━━━━━━━\n` +
-                            `𝗠𝗔𝗗𝗘 𝗕𝗬 ✰ 𝗦𝗛𝗔𝗔𝗡 𝗞𝗛𝗔𝗡`;
+                            `𝗠𝗔𝗗𝗘 𝗕𝗬 ❣️ 𝗦𝗛𝗔𝗔𝗡 𝗞𝗛𝗔𝗡`;
 
     api.sendMessage(responseMessage, event.threadID, event.messageID);
   }
